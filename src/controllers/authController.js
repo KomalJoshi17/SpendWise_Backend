@@ -1,32 +1,11 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
-const axios = require("axios");
-
 const signup = async (req, res, next) => {
   try {
-    const { name, email, password, captchaToken } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password || !captchaToken) {
+    if (!name || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    const params = new URLSearchParams();
-    params.append("secret", process.env.RECAPTCHA_SECRET);
-    params.append("response", captchaToken);
-
-    const captchaRes = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      params,
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-    );
-
-    console.log("DEBUG captchaRes.data =", captchaRes.data);
-
-    if (!captchaRes.data.success) {
-      return res.status(400).json({
-        message: "Captcha validation failed",
-        detail: captchaRes.data
-      });
     }
 
     const existingUser = await User.findOne({ email });
@@ -86,4 +65,8 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login };
+const logout = (req, res) => {
+  res.json({ message: "Logged out successfully" });
+};
+
+module.exports = { signup, login, logout };

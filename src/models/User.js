@@ -17,24 +17,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function() {
-        return !this.googleId;
-      },
+      required: true,
       minlength: 6,
-    },
-    googleId: {
-      type: String,
-      sparse: true,
-      unique: true,
     },
     avatar: {
       type: String,
       default: null,
-    },
-    provider: {
-      type: String,
-      enum: ['local', 'google'],
-      default: 'local',
     },
     monthlyIncome: {
       type: Number,
